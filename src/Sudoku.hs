@@ -7,24 +7,26 @@ evalCell :: Cell -> Cell
 evalCell (Cell _ [x]) = Cell (Just x) []
 evalCell (Cell i p) = Cell i p
 
--- Fill in all possible guesses for a board (column + row only)
+-- Fill in possibles for a board (column + row only)
 fillInPossibleBoard :: [[Cell]] -> [[Cell]]
 fillInPossibleBoard board =
-  let rowsGuessed = fmap fillInPossible board
-      columnsGuessed = fmap (getColumn board) [0 .. 8]
-   in zipBoardColumnGuesses rowsGuessed columnsGuessed
+  let rowPossibles = fmap fillInPossible board
+      columnPossibles = fmap (getColumnPossibles board) [0 .. 8]
+   in zipColumnPossibles rowPossibles columnPossibles
 
-zipBoardColumnGuesses :: [[Cell]] -> [[Int]] -> [[Cell]]
-zipBoardColumnGuesses = zipWith f
+-- Given a board and a 2D array of column possibles, return a board with possibles filled out
+zipColumnPossibles :: [[Cell]] -> [[Int]] -> [[Cell]]
+zipColumnPossibles = zipWith f
   where
     f row possible = fmap (integratePossibilities possible) row
 
 -- Given a board and a column number, get the possibles
-getColumn :: [[Cell]] -> Int -> [Int]
-getColumn board c = do
-  row <- board
-  let cell = row !! c
-  getPossible $ getFilledIn (return cell)
+getColumnPossibles :: [[Cell]] -> Int -> [Int]
+getColumnPossibles board c =
+  getPossible $ do
+    row <- board
+    let cell = row !! c
+    getFilledIn (return cell)
 
 -- Fill in all possible guesses for a row (row only)
 fillInPossible :: [Cell] -> [Cell]

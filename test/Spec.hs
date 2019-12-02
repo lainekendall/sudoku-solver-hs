@@ -33,6 +33,6 @@ spec = do
     it "Empty" $ null $ fillInPossible []
     it "some" $
       head (fillInPossible (head testBoard)) == Cell (Just 2) (1 : [3 .. 8])
-  describe "getColumn" $ do
-    it "Empty" $ null $ getColumn [] 0
-    it "some" $ getColumn testBoard 0 == []
+  describe "getColumnPossibles" $ do
+    it "Empty" $ getColumnPossibles [] 0 == [1 .. 9]
+    it "some" $ getColumnPossibles testBoard 0 == [1, 3, 4, 5, 6, 8, 9]
